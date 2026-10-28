@@ -43,4 +43,7 @@ spotSelect.addEventListener("change", function () {
 
   // 選択したスポットの緯度・経度を表示する
   spotCoordinates.textContent = `緯度：${selectedSpot.latitude}、経度：${selectedSpot.longitude}`;
+
+  // 選択したスポットの天気情報を取得する
+  getCurrentWeather(selectedSpot);
 });
