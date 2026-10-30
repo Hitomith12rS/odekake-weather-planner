@@ -89,3 +89,8 @@ button:disabled {
     width: min(100% - 40px, 900px);
   }
 }
+
+#weather-result {
+  white-space: pre-line;
+  line-height: 1.8;
+}
