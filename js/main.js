@@ -18,6 +18,9 @@ const spotCoordinates = document.getElementById("spot-coordinates");
 const shootDate = document.getElementById("shoot-date");
 const shootTime = document.getElementById("shoot-time");
 
+// 撮影方向の入力欄を取得
+const cameraDirection = document.getElementById("camera-direction");
+
 // 太陽位置の表示欄を取得
 const sunResult = document.getElementById("sun-result");
 
@@ -80,6 +83,20 @@ function updateSunPosition() {
     result += "\n太陽は地平線より下にあります。";
   }
 
+  // 撮影方向を取得
+  const selectedDirection = Number(cameraDirection.value);
+
+  // 光の状態を判定
+  const lightCondition = getLightCondition(
+    sunPosition.azimuth,
+    selectedDirection,
+    sunPosition.altitude,
+  );
+
+  // 判定結果を追加
+  result += `\n光の状態：${lightCondition}`;
+
+  // 太陽位置と光の状態を表示
   sunResult.textContent = result;
 }
 
@@ -114,3 +131,6 @@ shootDate.addEventListener("change", updateSunPosition);
 
 // 撮影時刻が変更されたときに実行する
 shootTime.addEventListener("change", updateSunPosition);
+
+// 撮影方向が変更されたときに実行する
+cameraDirection.addEventListener("change", updateSunPosition);
