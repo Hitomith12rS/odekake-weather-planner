@@ -11,6 +11,12 @@
     <link rel="stylesheet" href="css/style.css" />
     <script src="js/spots.js" defer></script>
     <script src="js/weather.js" defer></script>
+    <script type="module">
+      import * as SunCalc from "https://cdn.jsdelivr.net/npm/suncalc/+esm";
+
+      window.SunCalc = SunCalc;
+    </script>
+    <script src="js/sunlight.js" defer></script>
     <script src="js/main.js" defer></script>
   </head>
   <body>
