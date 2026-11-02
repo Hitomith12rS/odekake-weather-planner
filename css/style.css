@@ -99,3 +99,34 @@ button:disabled {
   white-space: pre-line;
   line-height: 1.8;
 }
+
+/* 撮影コンディション共通 */
+#light-condition {
+  padding: 16px;
+  border-radius: 8px;
+  line-height: 1.8;
+}
+
+/* 順光 */
+.light-condition-順光 {
+  background-color: #e8f5e9;
+  border-left: 5px solid #43a047;
+}
+
+/* 逆光 */
+.light-condition-逆光 {
+  background-color: #fff3e0;
+  border-left: 5px solid #fb8c00;
+}
+
+/* サイド光 */
+.light-condition-サイド光 {
+  background-color: #e3f2fd;
+  border-left: 5px solid #1e88e5;
+}
+
+/* 判定できない場合 */
+.light-condition-unavailable {
+  background-color: #eeeeee;
+  border-left: 5px solid #757575;
+}

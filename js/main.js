@@ -18,11 +18,21 @@ const spotCoordinates = document.getElementById("spot-coordinates");
 const shootDate = document.getElementById("shoot-date");
 const shootTime = document.getElementById("shoot-time");
 
+// 撮影日の初期値を今日に設定
+const today = new Date();
+const year = today.getFullYear();
+const month = String(today.getMonth() + 1).padStart(2, "0");
+const day = String(today.getDate()).padStart(2, "0");
+
+shootDate.value = `${year}-${month}-${day}`;
+
 // 撮影方向の入力欄を取得
 const cameraDirection = document.getElementById("camera-direction");
 
 // 太陽位置の表示欄を取得
 const sunResult = document.getElementById("sun-result");
+
+const lightConditionElement = document.getElementById("light-condition");
 
 // 方位角から方角の名前を取得する
 function getCompassDirection(degrees) {
@@ -31,6 +41,13 @@ function getCompassDirection(degrees) {
   const index = Math.round(degrees / 45) % 8;
 
   return directions[index];
+}
+
+// 撮影コンディションの表示を初期化
+function resetSunResult(message) {
+  lightConditionElement.className = "light-condition-unavailable";
+
+  sunResult.textContent = message;
 }
 
 // 太陽位置を画面に表示する
@@ -44,13 +61,19 @@ function updateSunPosition() {
 
   // スポットが未選択の場合
   if (!selectedSpot) {
-    sunResult.textContent = "撮影スポットを選択してください。";
+    resetSunResult("撮影スポットを選択してください。");
     return;
   }
 
   // 撮影日が未入力の場合
   if (!shootDate.value) {
-    sunResult.textContent = "撮影日を選択してください。";
+    resetSunResult("撮影日を選択してください。");
+    return;
+  }
+
+  // 撮影時刻が未入力の場合
+  if (!shootTime.value) {
+    resetSunResult("撮影時刻を選択してください。");
     return;
   }
 
@@ -93,11 +116,18 @@ function updateSunPosition() {
     sunPosition.altitude,
   );
 
-  // 判定結果を追加
-  result += `\n光の状態：${lightCondition}`;
+  // 光の状態を表示
+  if (sunPosition.altitude <= 0) {
+    lightConditionElement.className = "light-condition-unavailable";
+    sunResult.textContent = lightCondition;
+  } else {
+    lightConditionElement.className = `light-condition-${lightCondition}`;
 
-  // 太陽位置と光の状態を表示
-  sunResult.textContent = result;
+    sunResult.textContent =
+      `光の状態：${lightCondition}\n` +
+      `太陽の方角：${direction}（${azimuth}°）\n` +
+      `太陽の高度：${altitude}°`;
+  }
 }
 
 // スポットの選択が変更されたときに実行する
