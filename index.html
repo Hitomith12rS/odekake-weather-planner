@@ -29,13 +29,25 @@
       <section class="card">
         <h2>撮影スポット</h2>
         <p>お気に入りの観光地を選んで、撮影の計画を立てましょう。</p>
+
         <label for="spot-select">観光スポット</label>
         <select id="spot-select">
           <option value="">スポットを選択してください</option>
         </select>
-        <p id="spot-description">スポットを選択してください。</p>
 
+        <p id="spot-description">スポットを選択してください。</p>
         <p id="spot-coordinates">緯度・経度：未選択</p>
+
+        <!-- お気に入り登録ボタン -->
+        <button id="favorite-button" type="button">☆ お気に入りに登録</button>
+
+        <!-- お気に入り一覧 -->
+        <div class="favorite-area">
+          <h3>お気に入りスポット</h3>
+          <ul id="favorite-list">
+            <li>お気に入りはまだ登録されていません。</li>
+          </ul>
+        </div>
       </section>
 
       <section class="card">

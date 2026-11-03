@@ -14,6 +14,112 @@ spots.forEach(function (spot) {
 const spotDescription = document.getElementById("spot-description");
 const spotCoordinates = document.getElementById("spot-coordinates");
 
+// お気に入り機能のHTML要素を取得
+const favoriteButton = document.getElementById("favorite-button");
+const favoriteList = document.getElementById("favorite-list");
+
+// お気に入りスポットを保存する配列
+let favoriteSpots = [];
+
+// localStorageからお気に入りを読み込む
+const savedFavorites = localStorage.getItem("favoriteSpots");
+
+if (savedFavorites) {
+  favoriteSpots = JSON.parse(savedFavorites);
+}
+
+// お気に入りをlocalStorageに保存する
+function saveFavorites() {
+  localStorage.setItem("favoriteSpots", JSON.stringify(favoriteSpots));
+}
+
+// お気に入り一覧を画面に表示する
+function displayFavorites() {
+  // 一覧を一度空にする
+  favoriteList.innerHTML = "";
+
+  // お気に入りがない場合
+  if (favoriteSpots.length === 0) {
+    const li = document.createElement("li");
+    li.textContent = "お気に入りはまだ登録されていません。";
+    favoriteList.appendChild(li);
+    return;
+  }
+
+  // お気に入りを1件ずつ表示
+  favoriteSpots.forEach(function (id) {
+    const spot = spots.find(function (spot) {
+      return spot.id === id;
+    });
+
+    if (!spot) return;
+
+    const li = document.createElement("li");
+
+    // スポット名をボタンとして表示
+    const button = document.createElement("button");
+    button.textContent = spot.name;
+    button.type = "button";
+
+    // クリックするとスポットを選択する
+    button.addEventListener("click", function () {
+      spotSelect.value = spot.id;
+
+      // スポット選択時の処理を実行
+      spotSelect.dispatchEvent(new Event("change"));
+    });
+
+    li.appendChild(button);
+    favoriteList.appendChild(li);
+  });
+}
+
+// お気に入り登録ボタンの処理
+favoriteButton.addEventListener("click", function () {
+  const selectedId = Number(spotSelect.value);
+
+  // スポットが選択されていない場合
+  if (!spotSelect.value) {
+    alert("お気に入りに登録するスポットを選択してください。");
+    return;
+  }
+
+  // すでに登録されているか確認
+  if (favoriteSpots.includes(selectedId)) {
+    // 登録済みならお気に入りから削除
+    favoriteSpots = favoriteSpots.filter(function (id) {
+      return id !== selectedId;
+    });
+
+    // favoriteButton.textContent = "☆ お気に入りに登録";
+  } else {
+    // 未登録ならお気に入りに追加
+    favoriteSpots.push(selectedId);
+
+    // favoriteButton.textContent = "★ お気に入りを解除";
+  }
+
+  // localStorageに保存
+  saveFavorites();
+
+  //お気に入り一覧更新
+  displayFavorites();
+
+  //お気に入りボタン更新
+  updateFavoriteButton();
+});
+
+// 選択中のスポットに応じてボタン表示を更新する
+function updateFavoriteButton() {
+  const selectedId = Number(spotSelect.value);
+
+  if (favoriteSpots.includes(selectedId)) {
+    favoriteButton.textContent = "★ お気に入りを解除";
+  } else {
+    favoriteButton.textContent = "☆ お気に入りに登録";
+  }
+}
+
 // 撮影日時の入力欄を取得
 const shootDate = document.getElementById("shoot-date");
 const shootTime = document.getElementById("shoot-time");
@@ -154,6 +260,9 @@ spotSelect.addEventListener("change", function () {
 
   // 太陽位置を更新
   updateSunPosition();
+
+  // スポット選択時にボタンを更新
+  updateFavoriteButton();
 });
 
 // 撮影日が変更されたときに実行する
@@ -164,3 +273,8 @@ shootTime.addEventListener("change", updateSunPosition);
 
 // 撮影方向が変更されたときに実行する
 cameraDirection.addEventListener("change", updateSunPosition);
+
+// ページ読み込み時にお気に入り一覧を表示
+displayFavorites();
+// 初期表示も更新
+updateFavoriteButton();
