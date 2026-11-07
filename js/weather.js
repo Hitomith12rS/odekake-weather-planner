@@ -40,56 +40,72 @@ function getWeatherDescription(code) {
   return weatherDescriptions[code] ?? "不明な天気";
 }
 
-async function getCurrentWeather(spot) {
-  // 天気情報の表示場所を取得する
+// 訪問予定日の天気予報を取得する
+async function getWeatherForecast(spot, date) {
   const weatherResult = document.getElementById("weather-result");
 
-  // データの取得中であることを表示する
-  weatherResult.textContent = "天気情報を取得中...";
+  // 入力チェック
+  if (!date) {
+    weatherResult.textContent = "訪問予定日を選択してください。";
+    return;
+  }
 
-  // APIに渡すパラメータを作成する
+  // 取得中の表示
+  weatherResult.textContent = "天気予報を取得中...";
+
+  // APIに渡すパラメータを作成
   const params = new URLSearchParams({
     latitude: spot.latitude,
     longitude: spot.longitude,
-    current: "temperature_2m,weather_code,cloud_cover",
+    daily:
+      "weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max",
     timezone: "Asia/Tokyo",
+    forecast_days: "16",
   });
 
-  // APIのURLを作成する
   const url = `https://api.open-meteo.com/v1/forecast?${params}`;
 
   try {
     // APIにリクエストを送る
     const response = await fetch(url);
 
-    // 通信が正常に完了したか確認する
     if (!response.ok) {
-      throw new Error("天気データの取得に失敗しました。");
+      throw new Error("天気予報の取得に失敗しました。");
     }
 
-    // JSON形式のデータを取得する
+    // JSON形式のデータを取得
     const data = await response.json();
-    const current = data.current;
 
-    // 天気コードを日本語に変換する
-    const weather = getWeatherDescription(current.weather_code);
+    // 指定した日付のデータ位置を探す
+    const dateIndex = data.daily.time.indexOf(date);
 
-    // 天気情報を画面に表示する
+    // 指定日が予報データに含まれていない場合
+    if (dateIndex === -1) {
+      weatherResult.textContent =
+        "指定日の天気予報は取得できません。現在から16日以内の日付を選択してください。";
+      return;
+    }
+
+    // 指定日の天気情報を取得
+    const weather = getWeatherDescription(data.daily.weather_code[dateIndex]);
+
+    const maxTemperature = data.daily.temperature_2m_max[dateIndex];
+
+    const minTemperature = data.daily.temperature_2m_min[dateIndex];
+
+    const precipitationProbability =
+      data.daily.precipitation_probability_max[dateIndex];
+
+    // 天気予報を画面に表示
     weatherResult.textContent =
       `天気：${weather}\n` +
-      `気温：${current.temperature_2m}℃\n` +
-      `雲量：${current.cloud_cover}%`;
+      `最高気温：${maxTemperature}℃\n` +
+      `最低気温：${minTemperature}℃\n` +
+      `降水確率：${precipitationProbability ?? "不明"}%`;
   } catch (error) {
-    // エラーの詳細をコンソールに表示する
-    console.error("天気情報の取得エラー：", error);
+    console.error("天気予報の取得エラー：", error);
 
-    // ユーザー向けのメッセージを表示する
     weatherResult.textContent =
-      "天気情報を取得できませんでした。時間をおいて再度お試しください。";
+      "天気予報を取得できませんでした。時間をおいて再度お試しください。";
   }
 }
-
-console.log(getWeatherDescription(0));
-console.log(getWeatherDescription(61));
-console.log(getWeatherDescription(95));
-console.log(getWeatherDescription(999));

@@ -26,17 +26,26 @@
     </header>
 
     <main class="container">
+      <!-- お出かけ計画 -->
       <section class="card">
-        <h2>撮影スポット</h2>
-        <p>お気に入りの観光地を選んで、撮影の計画を立てましょう。</p>
+        <h2>お出かけ計画</h2>
+        <p>訪問したい観光地と日付を選んで、天気を確認しましょう。</p>
 
-        <label for="spot-select">観光スポット</label>
-        <select id="spot-select">
-          <option value="">スポットを選択してください</option>
-        </select>
+        <div class="form-group">
+          <label for="spot-select">観光スポット</label>
+          <select id="spot-select">
+            <option value="">スポットを選択してください</option>
+          </select>
+        </div>
 
         <p id="spot-description">スポットを選択してください。</p>
         <p id="spot-coordinates">緯度・経度：未選択</p>
+
+        <!-- 訪問日 -->
+        <div class="form-group">
+          <label for="visit-date">訪問予定日</label>
+          <input type="date" id="visit-date" />
+        </div>
 
         <!-- お気に入り登録ボタン -->
         <button id="favorite-button" type="button">☆ お気に入りに登録</button>
@@ -50,16 +59,33 @@
         </div>
       </section>
 
+      <!-- 天気予報 -->
       <section class="card">
-        <h2>撮影日時・方向</h2>
+        <h2>訪問日の天気予報</h2>
+        <p id="weather-result" aria-live="polite">
+          スポットと訪問日を選択すると天気情報を確認できます。
+        </p>
+        <div id="sun-times">
+          <p>日の出：--:--</p>
+          <p>日の入り：--:--</p>
+        </div>
+      </section>
+
+      <!-- 撮影プラン -->
+      <section class="card">
+        <h2>撮影プラン</h2>
+        <p>撮影したい日時と方向を指定しましょう。</p>
+
         <div class="form-group">
           <label for="shoot-date">撮影日</label>
           <input type="date" id="shoot-date" />
         </div>
+
         <div class="form-group">
           <label for="shoot-time">撮影時刻</label>
           <input type="time" id="shoot-time" value="10:00" />
         </div>
+
         <div class="form-group">
           <label for="camera-direction">撮影する方向</label>
           <select id="camera-direction">
@@ -71,13 +97,7 @@
         </div>
       </section>
 
-      <section class="card">
-        <h2>天気予報</h2>
-        <p id="weather-result" aria-live="polite">
-          スポットを選択すると天気情報を確認できます。
-        </p>
-      </section>
-
+      <!-- 撮影コンディション -->
       <section class="card">
         <h2>撮影コンディション</h2>
 

@@ -3,6 +3,9 @@ console.log("おでかけ天気プランナーを起動しました。");
 // HTMLから観光スポットの選択欄を取得する
 const spotSelect = document.getElementById("spot-select");
 
+// HTMLから天気予報欄を取得する
+const weatherResult = document.getElementById("weather-result");
+
 // 登録したスポットを1件ずつ処理する
 spots.forEach(function (spot) {
   const option = document.createElement("option");
@@ -120,17 +123,22 @@ function updateFavoriteButton() {
   }
 }
 
-// 撮影日時の入力欄を取得
+// 訪問日・撮影日時の入力欄を取得
+const visitDate = document.getElementById("visit-date");
 const shootDate = document.getElementById("shoot-date");
 const shootTime = document.getElementById("shoot-time");
 
-// 撮影日の初期値を今日に設定
+// 今日の日付を取得
 const today = new Date();
 const year = today.getFullYear();
 const month = String(today.getMonth() + 1).padStart(2, "0");
 const day = String(today.getDate()).padStart(2, "0");
 
-shootDate.value = `${year}-${month}-${day}`;
+const todayString = `${year}-${month}-${day}`;
+
+// 訪問日と撮影日の初期値を今日に設定
+visitDate.value = todayString;
+shootDate.value = todayString;
 
 // 撮影方向の入力欄を取得
 const cameraDirection = document.getElementById("camera-direction");
@@ -183,12 +191,6 @@ function updateSunPosition() {
     return;
   }
 
-  // 撮影時刻が未入力の場合
-  if (!shootTime.value) {
-    sunResult.textContent = "撮影時刻を選択してください。";
-    return;
-  }
-
   // 太陽位置を計算
   const sunPosition = getSunPosition(
     selectedSpot,
@@ -222,6 +224,15 @@ function updateSunPosition() {
     sunPosition.altitude,
   );
 
+  // 光の状態に応じた説明文
+  const lightDescriptions = {
+    順光: "被写体の正面から光が当たり、色や形がはっきり写りやすい状態です。",
+    逆光: "被写体の後ろから光が当たり、シルエットや光の演出を活かせる状態です。",
+    サイド光: "被写体の横から光が当たり、立体感や陰影が出やすい状態です。",
+  };
+
+  const lightDescription = lightDescriptions[lightCondition];
+
   // 光の状態を表示
   if (sunPosition.altitude <= 0) {
     lightConditionElement.className = "light-condition-unavailable";
@@ -231,9 +242,45 @@ function updateSunPosition() {
 
     sunResult.textContent =
       `光の状態：${lightCondition}\n` +
+      `${lightDescription}\n\n` +
       `太陽の方角：${direction}（${azimuth}°）\n` +
       `太陽の高度：${altitude}°`;
   }
+}
+
+// 訪問日の日時から日の出・日の入り時刻を更新する
+function updateSunTimes(spot) {
+  const sunTimes = document.getElementById("sun-times");
+
+  // スポットまたは訪問日が未選択の場合
+  if (!spot || !visitDate.value) {
+    sunTimes.innerHTML = `
+      <p>日の出：--:--</p>
+      <p>日の入り：--:--</p>
+    `;
+    return;
+  }
+
+  // 訪問日をDateオブジェクトに変換
+  // 正午を指定して日付のずれを防ぐ
+  const date = new Date(`${visitDate.value}T12:00:00`);
+
+  // SunCalcで日の出・日の入りを取得
+  const times = SunCalc.getTimes(date, spot.latitude, spot.longitude);
+
+  // 時刻を「時:分」の形式に整える
+  function formatTime(date) {
+    return date.toLocaleTimeString("ja-JP", {
+      hour: "2-digit",
+      minute: "2-digit",
+      hourCycle: "h23",
+    });
+  }
+
+  sunTimes.innerHTML = `
+    <p>日の出：${formatTime(times.sunrise)}</p>
+    <p>日の入り：${formatTime(times.sunset)}</p>
+  `;
 }
 
 // スポットの選択が変更されたときに実行する
@@ -247,7 +294,17 @@ spotSelect.addEventListener("change", function () {
   if (!selectedSpot) {
     spotDescription.textContent = "スポットを選択してください。";
     spotCoordinates.textContent = "緯度・経度：未選択";
-    sunResult.textContent = "撮影スポットと日時を選択してください。";
+
+    // 天気予報を初期表示に戻す
+    weatherResult.textContent =
+      "スポットと訪問日を選択すると天気情報を確認できます。";
+
+    // 撮影コンディションを初期表示に戻す
+    resetSunResult("撮影スポットを選択してください。");
+
+    // 日の出・日の入りを初期表示に戻す
+    updateSunTimes(null);
+
     return;
   }
 
@@ -255,8 +312,11 @@ spotSelect.addEventListener("change", function () {
 
   spotCoordinates.textContent = `緯度：${selectedSpot.latitude}、経度：${selectedSpot.longitude}`;
 
-  // 天気情報を取得
-  getCurrentWeather(selectedSpot);
+  // 訪問予定日の天気予報を取得
+  getWeatherForecast(selectedSpot, visitDate.value);
+
+  // 日の出・日の入りを更新
+  updateSunTimes(selectedSpot);
 
   // 太陽位置を更新
   updateSunPosition();
@@ -273,6 +333,20 @@ shootTime.addEventListener("change", updateSunPosition);
 
 // 撮影方向が変更されたときに実行する
 cameraDirection.addEventListener("change", updateSunPosition);
+
+// 訪問日が変更されたときに天気予報を更新
+visitDate.addEventListener("change", function () {
+  const selectedId = Number(spotSelect.value);
+
+  const selectedSpot = spots.find(function (spot) {
+    return spot.id === selectedId;
+  });
+
+  if (selectedSpot) {
+    getWeatherForecast(selectedSpot, visitDate.value);
+    updateSunTimes(selectedSpot);
+  }
+});
 
 // ページ読み込み時にお気に入り一覧を表示
 displayFavorites();
