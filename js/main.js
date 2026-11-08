@@ -116,6 +116,16 @@ favoriteButton.addEventListener("click", function () {
 function updateFavoriteButton() {
   const selectedId = Number(spotSelect.value);
 
+  // スポット未選択の場合
+  if (!spotSelect.value) {
+    favoriteButton.textContent = "☆ お気に入りに登録";
+    favoriteButton.disabled = true;
+    return;
+  }
+
+  // スポット選択済みの場合
+  favoriteButton.disabled = false;
+
   if (favoriteSpots.includes(selectedId)) {
     favoriteButton.textContent = "★ お気に入りを解除";
   } else {
@@ -304,6 +314,9 @@ spotSelect.addEventListener("change", function () {
 
     // 日の出・日の入りを初期表示に戻す
     updateSunTimes(null);
+
+    // お気に入りボタンを未選択状態に更新
+    updateFavoriteButton();
 
     return;
   }
