@@ -1,10 +1,30 @@
 console.log("おでかけ天気プランナーを起動しました。");
 
-// HTMLから観光スポットの選択欄を取得する
-const spotSelect = document.getElementById("spot-select");
+// -------------- HTML要素の取得 --------------
 
-// HTMLから天気予報欄を取得する
+// 観光スポットの選択欄を取得
+const spotSelect = document.getElementById("spot-select");
+// 天気予報欄を取得
 const weatherResult = document.getElementById("weather-result");
+
+const spotDescription = document.getElementById("spot-description");
+const spotCoordinates = document.getElementById("spot-coordinates");
+
+// お気に入り機能のHTML要素を取得
+const favoriteButton = document.getElementById("favorite-button");
+const favoriteList = document.getElementById("favorite-list");
+
+// 訪問日・撮影日時の入力欄を取得
+const visitDate = document.getElementById("visit-date");
+const shootDate = document.getElementById("shoot-date");
+const shootTime = document.getElementById("shoot-time");
+
+// 撮影方向の入力欄を取得
+const cameraDirection = document.getElementById("camera-direction");
+// 太陽位置の表示欄を取得
+const sunResult = document.getElementById("sun-result");
+const lightConditionElement = document.getElementById("light-condition");
+const sunTimes = document.getElementById("sun-times");
 
 // 登録したスポットを1件ずつ処理する
 spots.forEach(function (spot) {
@@ -14,32 +34,47 @@ spots.forEach(function (spot) {
   spotSelect.appendChild(option);
 });
 
-const spotDescription = document.getElementById("spot-description");
-const spotCoordinates = document.getElementById("spot-coordinates");
-
-// お気に入り機能のHTML要素を取得
-const favoriteButton = document.getElementById("favorite-button");
-const favoriteList = document.getElementById("favorite-list");
-
 // お気に入りスポットを保存する配列
 let favoriteSpots = [];
 
 // localStorageからお気に入りを読み込む
-const savedFavorites = localStorage.getItem("favoriteSpots");
+try {
+  const savedFavorites = localStorage.getItem("favoriteSpots");
 
-if (savedFavorites) {
-  favoriteSpots = JSON.parse(savedFavorites);
+  if (savedFavorites) {
+    const parsedFavorites = JSON.parse(savedFavorites);
+
+    // 取得した配列データチェック
+    if (Array.isArray(parsedFavorites)) {
+      favoriteSpots = [...new Set(parsedFavorites)].filter(function (id) {
+        return (
+          Number.isInteger(id) &&
+          spots.some(function (spot) {
+            return spot.id === id;
+          })
+        );
+      });
+    }
+  }
+} catch (error) {
+  console.error("お気に入りの読み込みに失敗しました。", error);
+  favoriteSpots = [];
 }
 
 // お気に入りをlocalStorageに保存する
 function saveFavorites() {
-  localStorage.setItem("favoriteSpots", JSON.stringify(favoriteSpots));
+  try {
+    localStorage.setItem("favoriteSpots", JSON.stringify(favoriteSpots));
+  } catch (error) {
+    console.error("お気に入りの保存に失敗しました。", error);
+    alert("お気に入りを保存できませんでした。");
+  }
 }
 
 // お気に入り一覧を画面に表示する
 function displayFavorites() {
   // 一覧を一度空にする
-  favoriteList.innerHTML = "";
+  favoriteList.replaceChildren();
 
   // お気に入りがない場合
   if (favoriteSpots.length === 0) {
@@ -93,13 +128,9 @@ favoriteButton.addEventListener("click", function () {
     favoriteSpots = favoriteSpots.filter(function (id) {
       return id !== selectedId;
     });
-
-    // favoriteButton.textContent = "☆ お気に入りに登録";
   } else {
     // 未登録ならお気に入りに追加
     favoriteSpots.push(selectedId);
-
-    // favoriteButton.textContent = "★ お気に入りを解除";
   }
 
   // localStorageに保存
@@ -133,11 +164,6 @@ function updateFavoriteButton() {
   }
 }
 
-// 訪問日・撮影日時の入力欄を取得
-const visitDate = document.getElementById("visit-date");
-const shootDate = document.getElementById("shoot-date");
-const shootTime = document.getElementById("shoot-time");
-
 // 今日の日付を取得
 const today = new Date();
 const year = today.getFullYear();
@@ -149,14 +175,6 @@ const todayString = `${year}-${month}-${day}`;
 // 訪問日と撮影日の初期値を今日に設定
 visitDate.value = todayString;
 shootDate.value = todayString;
-
-// 撮影方向の入力欄を取得
-const cameraDirection = document.getElementById("camera-direction");
-
-// 太陽位置の表示欄を取得
-const sunResult = document.getElementById("sun-result");
-
-const lightConditionElement = document.getElementById("light-condition");
 
 // 方位角から方角の名前を取得する
 function getCompassDirection(degrees) {
@@ -173,6 +191,13 @@ function resetSunResult(message) {
 
   sunResult.textContent = message;
 }
+
+// 光の状態に応じた説明文
+const lightDescriptions = {
+  順光: "被写体の正面から光が当たり、色や形がはっきり写りやすい状態です。",
+  逆光: "被写体の後ろから光が当たり、シルエットや光の演出を活かせる状態です。",
+  サイド光: "被写体の横から光が当たり、立体感や陰影が出やすい状態です。",
+};
 
 // 太陽位置を画面に表示する
 function updateSunPosition() {
@@ -215,15 +240,6 @@ function updateSunPosition() {
   const azimuth = sunPosition.azimuth.toFixed(1);
   const altitude = sunPosition.altitude.toFixed(1);
 
-  // 太陽位置を表示
-  let result =
-    `太陽の方角：${direction}（${azimuth}°）\n` + `太陽の高度：${altitude}°`;
-
-  // 太陽が地平線より下にある場合
-  if (sunPosition.altitude <= 0) {
-    result += "\n太陽は地平線より下にあります。";
-  }
-
   // 撮影方向を取得
   const selectedDirection = Number(cameraDirection.value);
 
@@ -233,13 +249,6 @@ function updateSunPosition() {
     selectedDirection,
     sunPosition.altitude,
   );
-
-  // 光の状態に応じた説明文
-  const lightDescriptions = {
-    順光: "被写体の正面から光が当たり、色や形がはっきり写りやすい状態です。",
-    逆光: "被写体の後ろから光が当たり、シルエットや光の演出を活かせる状態です。",
-    サイド光: "被写体の横から光が当たり、立体感や陰影が出やすい状態です。",
-  };
 
   const lightDescription = lightDescriptions[lightCondition];
 
