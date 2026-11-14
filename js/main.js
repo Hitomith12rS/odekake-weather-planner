@@ -333,8 +333,11 @@ shootTime.addEventListener("change", updateSunPosition);
 // 撮影方向が変更されたときに実行する
 cameraDirection.addEventListener("change", updateSunPosition);
 
-// 訪問日が変更されたときに天気予報を更新
+// 訪問日が変更されたときに天気予報と撮影日を更新
 visitDate.addEventListener("change", function () {
+  // 撮影日も訪問日と同じ日に変更
+  shootDate.value = visitDate.value;
+
   const selectedId = Number(spotSelect.value);
 
   const selectedSpot = spots.find(function (spot) {
@@ -344,6 +347,9 @@ visitDate.addEventListener("change", function () {
   if (selectedSpot) {
     getWeatherForecast(selectedSpot, visitDate.value);
     updateSunTimes(selectedSpot);
+
+    // 撮影日が変わったので太陽位置も更新
+    updateSunPosition();
   }
 });
 
