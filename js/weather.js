@@ -64,6 +64,7 @@ async function getWeatherForecast(spot, date) {
   });
 
   const url = `https://api.open-meteo.com/v1/forecast?${params}`;
+  console.log("天気API URL:", url);
 
   try {
     // APIにリクエストを送る

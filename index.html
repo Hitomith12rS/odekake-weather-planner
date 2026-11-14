@@ -8,28 +8,57 @@
       content="観光地の天気と太陽の位置から、撮影プランを考えるWebアプリです。"
     />
     <title>おでかけ天気プランナー</title>
+
     <link rel="stylesheet" href="css/style.css" />
+
     <script src="js/spots.js" defer></script>
     <script src="js/weather.js" defer></script>
+
     <script type="module">
       import * as SunCalc from "https://cdn.jsdelivr.net/npm/suncalc/+esm";
 
       window.SunCalc = SunCalc;
     </script>
+
     <script src="js/sunlight.js" defer></script>
     <script src="js/main.js" defer></script>
   </head>
+
   <body>
+    <!-- ヘッダー -->
     <header class="site-header">
       <h1>おでかけ天気プランナー</h1>
       <p>天気と太陽の位置から、撮影プランを考えよう。</p>
     </header>
 
+    <!-- ページ内ナビゲーション -->
+    <nav class="site-nav" aria-label="メインナビゲーション">
+      <a href="#favorites-section">お気に入り</a>
+      <a href="#spot-section">スポット選択</a>
+      <a href="#visit-section">訪問計画</a>
+      <a href="#weather-section">天気予報</a>
+      <a href="#shooting-section">撮影サポート</a>
+    </nav>
+
     <main class="container">
-      <!-- お出かけ計画 -->
-      <section class="card">
-        <h2>お出かけ計画</h2>
-        <p>訪問したい観光地と日付を選んで、天気を確認しましょう。</p>
+      <!-- 1. お気に入り -->
+      <section id="favorites-section" class="card">
+        <h2>お気に入りスポット</h2>
+
+        <p>登録したスポットを選択すると、そのスポットの情報を表示できます。</p>
+
+        <div class="favorite-area">
+          <ul id="favorite-list">
+            <li>お気に入りはまだ登録されていません。</li>
+          </ul>
+        </div>
+      </section>
+
+      <!-- 2. スポット選択 -->
+      <section id="spot-section" class="card">
+        <h2>スポット選択</h2>
+
+        <p>撮影や観光をしたいスポットを選択してください。</p>
 
         <div class="form-group">
           <label for="spot-select">観光スポット</label>
@@ -39,42 +68,45 @@
         </div>
 
         <p id="spot-description">スポットを選択してください。</p>
+
         <p id="spot-coordinates">緯度・経度：未選択</p>
 
-        <!-- 訪問日 -->
+        <button id="favorite-button" type="button">☆ お気に入りに登録</button>
+      </section>
+
+      <!-- 3. 訪問計画 -->
+      <section id="visit-section" class="card">
+        <h2>訪問計画</h2>
+
+        <p>
+          訪問したい日を指定してください。 指定した日の天気予報を確認できます。
+        </p>
+
         <div class="form-group">
           <label for="visit-date">訪問予定日</label>
           <input type="date" id="visit-date" />
         </div>
-
-        <!-- お気に入り登録ボタン -->
-        <button id="favorite-button" type="button">☆ お気に入りに登録</button>
-
-        <!-- お気に入り一覧 -->
-        <div class="favorite-area">
-          <h3>お気に入りスポット</h3>
-          <ul id="favorite-list">
-            <li>お気に入りはまだ登録されていません。</li>
-          </ul>
-        </div>
       </section>
 
-      <!-- 天気予報 -->
-      <section class="card">
+      <!-- 4. 天気予報 -->
+      <section id="weather-section" class="card">
         <h2>訪問日の天気予報</h2>
+
         <p id="weather-result" aria-live="polite">
           スポットと訪問日を選択すると天気情報を確認できます。
         </p>
+
         <div id="sun-times">
           <p>日の出：--:--</p>
           <p>日の入り：--:--</p>
         </div>
       </section>
 
-      <!-- 撮影プラン -->
-      <section class="card">
-        <h2>撮影プラン</h2>
-        <p>撮影したい日時と方向を指定しましょう。</p>
+      <!-- 5. 撮影サポート -->
+      <section id="shooting-section" class="card">
+        <h2>撮影サポート</h2>
+
+        <p>撮影する日時と、カメラを向ける方向を指定してください。</p>
 
         <div class="form-group">
           <label for="shoot-date">撮影日</label>
@@ -87,28 +119,84 @@
         </div>
 
         <div class="form-group">
-          <label for="camera-direction">撮影する方向</label>
+          <label for="camera-direction">カメラを向ける方向</label>
+
           <select id="camera-direction">
             <option value="0">北</option>
             <option value="90">東</option>
             <option value="180">南</option>
             <option value="270">西</option>
           </select>
+
+          <p class="form-help">
+            撮影者から被写体を見る方向を選択してください。
+          </p>
         </div>
-      </section>
 
-      <!-- 撮影コンディション -->
-      <section class="card">
-        <h2>撮影コンディション</h2>
-
+        <!-- 撮影コンディション -->
         <div id="light-condition">
+          <h3>太陽の位置と光の向き</h3>
+
           <p id="sun-result" aria-live="polite">
             撮影スポットと日時を選択してください。
+          </p>
+        </div>
+
+        <!-- 方位図 -->
+        <div class="direction-visual">
+          <h3>太陽とカメラの方向</h3>
+
+          <p class="form-help">
+            太陽の方向と、カメラが向いている方向を比較できます。
+          </p>
+
+          <div class="direction-legend">
+            <span class="sun-legend">● 太陽の方向</span>
+            <span class="camera-legend">● カメラの向き</span>
+          </div>
+
+          <div class="compass-container">
+            <svg
+              id="direction-compass"
+              viewBox="0 0 300 300"
+              role="img"
+              aria-label="太陽とカメラの向きを示す方位図"
+            >
+              <!-- 方位円 -->
+              <circle cx="150" cy="150" r="115" class="compass-circle" />
+              <circle cx="150" cy="150" r="4" class="compass-center" />
+
+              <!-- 方位の目盛り -->
+              <text x="150" y="25" class="compass-label">北</text>
+              <text x="275" y="155" class="compass-label">東</text>
+              <text x="150" y="290" class="compass-label">南</text>
+              <text x="25" y="155" class="compass-label">西</text>
+
+              <!-- 太陽の方向 -->
+              <g id="sun-direction-arrow">
+                <line x1="150" y1="150" x2="150" y2="55" class="sun-arrow" />
+                <circle cx="150" cy="48" r="9" class="sun-point" />
+              </g>
+
+              <!-- カメラの向き -->
+              <g id="camera-direction-arrow">
+                <line x1="150" y1="150" x2="150" y2="75" class="camera-arrow" />
+                <path
+                  d="M 143 83 L 150 72 L 157 83"
+                  class="camera-arrow-head"
+                />
+              </g>
+            </svg>
+          </div>
+
+          <p class="direction-note">
+            方位を上から見た模式図です。実際の地形や建物による遮蔽は反映されません。
           </p>
         </div>
       </section>
     </main>
 
+    <!-- フッター -->
     <footer class="site-footer">
       <p>&copy; 2026 おでかけ天気プランナー</p>
     </footer>
