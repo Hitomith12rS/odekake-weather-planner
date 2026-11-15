@@ -75,7 +75,7 @@ function updateSunTimes(spot) {
   }
 
   sunTimes.innerHTML = `
-    <p>日の出：${formatTime(times.sunrise)}</p>
+    <p>日の出：${formatTime(times.sunrise)} </p>
     <p>日の入り：${formatTime(times.sunset)}</p>
   `;
 }

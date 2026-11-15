@@ -50,9 +50,7 @@
       <!-- 1. お気に入り -->
       <section id="favorites-section" class="card">
         <h2>お気に入りスポット</h2>
-
-        <p>登録したスポットを選択すると、そのスポットの情報を表示できます。</p>
-
+        <!-- <p>登録したスポットを選択すると、そのスポットの情報を表示できます。</p> -->
         <div class="favorite-area">
           <ul id="favorite-list">
             <li>お気に入りはまだ登録されていません。</li>
@@ -72,10 +70,10 @@
             <option value="">スポットを選択してください</option>
           </select>
         </div>
-
-        <p id="spot-description">スポットを選択してください。</p>
-
-        <p id="spot-coordinates">緯度・経度：未選択</p>
+        <!-- スポット概要 -->
+        <p id="spot-description">-----</p>
+        <!-- 緯度・経度 -->
+        <p id="spot-coordinates">-----</p>
 
         <button id="favorite-button" type="button">☆ お気に入りに登録</button>
       </section>
@@ -84,9 +82,7 @@
       <section id="visit-section" class="card">
         <h2>訪問計画</h2>
 
-        <p>
-          訪問したい日を指定してください。 指定した日の天気予報を確認できます。
-        </p>
+        <p>訪問したい日を指定してください。 天気予報を確認できます。</p>
 
         <div class="form-group">
           <label for="visit-date">訪問予定日</label>
@@ -97,14 +93,14 @@
       <!-- 4. 天気予報 -->
       <section id="weather-section" class="card">
         <h2>訪問日の天気予報</h2>
-
-        <p id="weather-result" aria-live="polite">
-          スポットと訪問日を選択すると天気情報を確認できます。
-        </p>
-
-        <div id="sun-times">
-          <p>日の出：--:--</p>
-          <p>日の入り：--:--</p>
+        <div id="weather-area">
+          <p id="weather-result" aria-live="polite">
+            スポットと訪問日を選択すると天気情報を確認できます。
+          </p>
+          <div id="sun-times">
+            <p>日の出：--:--</p>
+            <p>日の入り：--:--</p>
+          </div>
         </div>
       </section>
 
