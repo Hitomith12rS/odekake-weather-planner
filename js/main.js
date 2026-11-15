@@ -23,7 +23,10 @@ const shootDate = document.getElementById("shoot-date");
 const shootTime = document.getElementById("shoot-time");
 
 // 撮影方向の入力欄を取得
-const cameraDirection = document.getElementById("camera-direction");
+const cameraDirection = document.querySelectorAll(
+  'input[name="camera-direction"]',
+);
+
 // 太陽位置の表示欄を取得
 const sunResult = document.getElementById("sun-result");
 const lightConditionElement = document.getElementById("light-condition");
@@ -241,7 +244,9 @@ function updateSunPosition() {
   );
 
   // 撮影方向を取得
-  const selectedDirection = Number(cameraDirection.value);
+  const selectedDirection = Number(
+    document.querySelector('input[name="camera-direction"]:checked').value,
+  );
 
   // 太陽の矢印を回転
   const sunArrow = document.getElementById("sun-direction-arrow");
@@ -337,7 +342,9 @@ shootDate.addEventListener("change", updateSunPosition);
 shootTime.addEventListener("change", updateSunPosition);
 
 // 撮影方向が変更されたときに実行する
-cameraDirection.addEventListener("change", updateSunPosition);
+cameraDirection.forEach(function (radio) {
+  radio.addEventListener("change", updateSunPosition);
+});
 
 // 訪問日が変更されたときに天気予報と撮影日を更新
 visitDate.addEventListener("change", function () {

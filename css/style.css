@@ -414,6 +414,69 @@ button:disabled {
   }
 }
 
+/* カメラ方向のラジオボタン */
+.direction-options {
+  display: flex;
+  justify-content: center;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.direction-option {
+  cursor: pointer;
+}
+
+.direction-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.direction-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  width: 52px;
+  height: 52px;
+
+  color: #28634f;
+  background: #ffffff;
+  border: 2px solid #b8c9bf;
+  border-radius: 50%;
+
+  font-weight: bold;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+/* 選択中 */
+.direction-option input:checked + span {
+  color: #ffffff;
+  background: #28634f;
+  border-color: #28634f;
+}
+
+/* キーボード操作時 */
+.direction-option input:focus-visible + span {
+  outline: 3px solid #e5a83b;
+  outline-offset: 3px;
+}
+
+/* スマートフォン */
+@media (max-width: 600px) {
+  .direction-options {
+    gap: 12px;
+  }
+
+  .direction-option span {
+    width: 48px;
+    height: 48px;
+  }
+}
+
 /* 撮影方向の視覚化 */
 .direction-visual {
   margin-top: 28px;
@@ -558,7 +621,7 @@ button:disabled {
 /* スマートフォン */
 @media (max-width: 600px) {
   .current-spot {
-    top: 52px;
+    top: 55px;
     gap: 6px;
     padding: 9px 8px;
     font-size: 0.82rem;

@@ -42,7 +42,7 @@
 
     <!-- 現在選択中のスポット -->
     <div class="current-spot">
-      <span class="current-spot-label">現在選択中のスポット</span>
+      <span class="current-spot-label">選択中</span>
       <span id="current-spot-name">スポット未選択</span>
     </div>
 
@@ -127,14 +127,29 @@
         </div>
 
         <div class="form-group">
-          <label for="camera-direction">カメラを向ける方向</label>
+          <label>カメラを向ける方向</label>
 
-          <select id="camera-direction">
-            <option value="0">北</option>
-            <option value="90">東</option>
-            <option value="180">南</option>
-            <option value="270">西</option>
-          </select>
+          <div class="direction-options">
+            <label class="direction-option">
+              <input type="radio" name="camera-direction" value="0" checked />
+              <span>北</span>
+            </label>
+
+            <label class="direction-option">
+              <input type="radio" name="camera-direction" value="90" />
+              <span>東</span>
+            </label>
+
+            <label class="direction-option">
+              <input type="radio" name="camera-direction" value="180" />
+              <span>南</span>
+            </label>
+
+            <label class="direction-option">
+              <input type="radio" name="camera-direction" value="270" />
+              <span>西</span>
+            </label>
+          </div>
 
           <p class="form-help">
             撮影者から被写体を見る方向を選択してください。
