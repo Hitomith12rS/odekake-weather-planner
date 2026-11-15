@@ -2,8 +2,11 @@ console.log("おでかけ天気プランナーを起動しました。");
 
 // -------------- HTML要素の取得 --------------
 
+const currentSpotName = document.getElementById("current-spot-name");
+
 // 観光スポットの選択欄を取得
 const spotSelect = document.getElementById("spot-select");
+
 // 天気予報欄を取得
 const weatherResult = document.getElementById("weather-result");
 
@@ -288,6 +291,7 @@ spotSelect.addEventListener("change", function () {
   });
 
   if (!selectedSpot) {
+    currentSpotName.textContent = "スポット未選択";
     spotDescription.textContent = "スポットを選択してください。";
     spotCoordinates.textContent = "緯度・経度：未選択";
 
@@ -306,6 +310,8 @@ spotSelect.addEventListener("change", function () {
 
     return;
   }
+
+  currentSpotName.textContent = selectedSpot.name;
 
   spotDescription.textContent = selectedSpot.description;
 

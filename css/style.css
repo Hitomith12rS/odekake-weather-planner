@@ -526,3 +526,41 @@ button:disabled {
     max-width: 280px;
   }
 }
+
+/* 現在選択中のスポット */
+.current-spot {
+  position: sticky;
+  top: 60px; /* ナビゲーションの高さに合わせる */
+  z-index: 99;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+
+  background: #f0f6f2;
+  border-bottom: 1px solid #dce8e1;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 3%);
+
+  font-size: 0.9rem;
+}
+
+.current-spot-label {
+  color: #68776e;
+}
+
+#current-spot-name {
+  color: #244c40;
+  font-weight: bold;
+}
+
+/* スマートフォン */
+@media (max-width: 600px) {
+  .current-spot {
+    top: 52px;
+    gap: 6px;
+    padding: 9px 8px;
+    font-size: 0.82rem;
+  }
+}
