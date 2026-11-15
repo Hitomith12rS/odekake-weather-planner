@@ -1,8 +1,37 @@
+/* ==========================================================
+   目次
+   1. 変数・基本設定
+   2. ヘッダー
+   3. ナビゲーション / 現在のスポット
+   4. メインコンテンツ（カード）
+   5. フォーム・ボタン
+   6. カメラ方向の選択
+   7. 天気情報
+   8. 撮影コンディション
+   9. 撮影方向の視覚化（コンパス）
+  10. お気に入り一覧
+  11. フッター
+  12. レスポンシブ（PC → タブレット/スマホ）
+========================================================== */
+
 /* ==========================
-   基本設定
+   1. 変数・基本設定
 ========================== */
 
-/* すべての要素の幅計算を統一 */
+:root {
+  /* 緑系 */
+  --green-900: #244c40; /* 見出し・濃い緑 */
+  --green-700: #28634f; /* メインカラー */
+  --green-800: #1d4e3d; /* ホバー時 */
+  --green-500: #5d9478; /* アクセント */
+
+  /* その他 */
+  --focus-color: #e5a83b;
+  --text-color: #26352f;
+  --border-color: #cbd5cf;
+  --bg-page: #f4f7f4;
+}
+
 *,
 *::before,
 *::after {
@@ -18,19 +47,27 @@ body {
   margin: 0;
   font-family: system-ui, sans-serif;
   line-height: 1.7;
-  color: #26352f;
-  background: #f4f7f4;
+  color: var(--text-color);
+  background: var(--bg-page);
+}
+
+/* キーボード操作時のフォーカス表示（共通） */
+.site-nav a:focus-visible,
+button:focus-visible {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 2px;
 }
 
 /* ==========================
-   ヘッダー
+   2. ヘッダー
 ========================== */
 
 .site-header {
   padding: 32px 16px;
   color: #fff;
   text-align: center;
-  background: #244c40;
+  background: var(--green-900) url("../images/IMG_6200a.webp") center / cover
+    no-repeat;
 }
 
 .site-header h1 {
@@ -46,7 +83,7 @@ body {
 }
 
 /* ==========================
-   ナビゲーション
+   3. ナビゲーション / 現在のスポット
 ========================== */
 
 .site-nav {
@@ -67,7 +104,7 @@ body {
 .site-nav a {
   flex-shrink: 0;
   padding: 8px 14px;
-  color: #28634f;
+  color: var(--green-700);
   font-size: 0.9rem;
   font-weight: 600;
   text-decoration: none;
@@ -80,16 +117,36 @@ body {
 
 .site-nav a:hover {
   color: #fff;
-  background: #28634f;
+  background: var(--green-700);
 }
 
-.site-nav a:focus-visible {
-  outline: 3px solid #e5a83b;
-  outline-offset: 2px;
+/* 現在選択中のスポット（ナビの下に固定） */
+.current-spot {
+  position: sticky;
+  top: 60px; /* ナビゲーションの高さに合わせる */
+  z-index: 99;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px 16px;
+  font-size: 0.9rem;
+  background: #f0f6f2;
+  border-bottom: 1px solid #dce8e1;
+  box-shadow: 0 2px 4px rgb(0 0 0 / 3%);
+}
+
+.current-spot-label {
+  color: #68776e;
+}
+
+#current-spot-name {
+  color: var(--green-900);
+  font-weight: bold;
 }
 
 /* ==========================
-   メインコンテンツ
+   4. メインコンテンツ（カード）
 ========================== */
 
 .container {
@@ -97,7 +154,6 @@ body {
   margin: 28px auto;
 }
 
-/* 各セクション */
 .card {
   margin-bottom: 24px;
   padding: 24px;
@@ -108,6 +164,10 @@ body {
   scroll-margin-top: 85px;
 }
 
+.card p {
+  margin-top: 0;
+}
+
 /* セクション見出し */
 .card h2 {
   display: flex;
@@ -115,7 +175,7 @@ body {
   gap: 10px;
   margin: 0 0 18px;
   padding-bottom: 12px;
-  color: #244c40;
+  color: var(--green-900);
   font-size: 1.3rem;
   font-weight: 700;
   border-bottom: 2px solid #e5eee8;
@@ -126,23 +186,20 @@ body {
   width: 5px;
   height: 1.3em;
   content: "";
-  background: #5d9478;
+  background: var(--green-500);
   border-radius: 4px;
 }
 
-.card p {
-  margin-top: 0;
-}
-
 /* 小見出し */
-.card h3 {
+.card h3,
+.direction-visual h3 {
   margin-top: 0;
-  color: #244c40;
+  color: var(--green-900);
   font-size: 1.05rem;
 }
 
 /* ==========================
-   フォーム
+   5. フォーム・ボタン
 ========================== */
 
 .form-group {
@@ -167,21 +224,21 @@ button {
   min-height: 46px;
   padding: 10px 12px;
   font: inherit;
-  border: 1px solid #cbd5cf;
+  border: 1px solid var(--border-color);
   border-radius: 8px;
 }
 
 input,
 select {
-  color: #26352f;
+  color: var(--text-color);
   background: #fff;
 }
 
 input:focus,
 select:focus {
-  outline: 2px solid #5d9478;
+  outline: 2px solid var(--green-500);
   outline-offset: 2px;
-  border-color: #5d9478;
+  border-color: var(--green-500);
 }
 
 /* 補足説明 */
@@ -191,32 +248,24 @@ select:focus {
   font-size: 0.85rem;
 }
 
-/* ==========================
-   ボタン
-========================== */
-
+/* ボタン */
 button {
   color: #fff;
-  background: #28634f;
+  font-weight: 600;
+  background: var(--green-700);
   border: none;
   cursor: pointer;
-  font-weight: 600;
   transition:
     background-color 0.2s,
     transform 0.2s;
 }
 
 button:hover:not(:disabled) {
-  background: #1d4e3d;
+  background: var(--green-800);
 }
 
 button:active:not(:disabled) {
   transform: translateY(1px);
-}
-
-button:focus-visible {
-  outline: 3px solid #e5a83b;
-  outline-offset: 2px;
 }
 
 button:disabled {
@@ -227,14 +276,74 @@ button:disabled {
 }
 
 /* ==========================
-   天気情報
+   6. カメラ方向の選択
 ========================== */
+
+.direction-options {
+  display: flex;
+  justify-content: flex-start;
+  gap: 14px;
+  margin-top: 12px;
+}
+
+.direction-option {
+  cursor: pointer;
+}
+
+.direction-option input {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.direction-option span {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 52px;
+  height: 52px;
+  color: var(--green-700);
+  font-weight: bold;
+  background: #fff;
+  border: 2px solid #b8c9bf;
+  border-radius: 50%;
+  transition:
+    background-color 0.2s,
+    color 0.2s,
+    border-color 0.2s;
+}
+
+/* 選択中 */
+.direction-option input:checked + span {
+  color: #fff;
+  background: var(--green-700);
+  border-color: var(--green-700);
+}
+
+/* キーボード操作時 */
+.direction-option input:focus-visible + span {
+  outline: 3px solid var(--focus-color);
+  outline-offset: 3px;
+}
+
+/* ==========================
+   7. 天気情報
+========================== */
+
+/* 結果表示エリア（天気・太陽方向 共通） */
+#weather-result,
+#sun-result {
+  min-height: 48px;
+  line-height: 1.9;
+  white-space: pre-line;
+}
 
 #weather-result {
   margin: 8px 0 16px;
-  min-height: 48px;
-  white-space: pre-line;
-  line-height: 1.9;
+}
+
+#sun-result {
+  margin: 0;
 }
 
 #sun-times {
@@ -250,25 +359,18 @@ button:disabled {
 }
 
 /* ==========================
-   撮影コンディション
+   8. 撮影コンディション
 ========================== */
 
 #light-condition {
   margin-top: 24px;
   padding: 18px;
-  border-radius: 10px;
   line-height: 1.8;
+  border-radius: 10px;
 }
 
 #light-condition h3 {
   margin-bottom: 12px;
-}
-
-#sun-result {
-  margin: 0;
-  min-height: 48px;
-  white-space: pre-line;
-  line-height: 1.9;
 }
 
 /* 順光 */
@@ -291,193 +393,14 @@ button:disabled {
 
 /* 判定できない場合 */
 .light-condition-unavailable {
-  background-color: #eeeeee;
+  background-color: #eee;
   border-left: 5px solid #757575;
 }
 
 /* ==========================
-   お気に入り一覧
+   9. 撮影方向の視覚化（コンパス）
 ========================== */
 
-.favorite-area {
-  margin-top: 16px;
-}
-
-#favorite-list {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-  gap: 12px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-#favorite-list li {
-  min-width: 0;
-}
-
-#favorite-list button {
-  width: 100%;
-  min-height: 48px;
-  padding: 10px 14px;
-  text-align: left;
-  color: #28634f;
-  background: #e8f1ed;
-  border: 1px solid #cbded4;
-  border-radius: 8px;
-  transition: background-color 0.2s;
-}
-
-#favorite-list button:hover {
-  color: #1d4e3d;
-  background: #d5e7dd;
-}
-
-/* ==========================
-   フッター
-========================== */
-
-.site-footer {
-  padding: 24px 16px;
-  text-align: center;
-  color: #5b6a62;
-  font-size: 0.85rem;
-  background: #e9efea;
-}
-
-.site-footer p {
-  margin: 0;
-}
-
-/* ==========================
-   PC向けレイアウト
-========================== */
-
-@media (min-width: 700px) {
-  .container {
-    width: min(100% - 40px, 900px);
-    margin: 36px auto;
-  }
-
-  .card {
-    padding: 28px 32px;
-  }
-
-  .site-nav {
-    gap: 16px;
-  }
-
-  .site-nav a {
-    padding: 9px 18px;
-  }
-}
-
-/* ==========================
-   スマートフォン向け調整
-========================== */
-
-@media (max-width: 699px) {
-  .site-header {
-    padding: 26px 12px;
-  }
-
-  .site-header p {
-    font-size: 0.85rem;
-  }
-
-  .site-nav {
-    justify-content: flex-start;
-    gap: 4px;
-    padding: 9px 10px;
-  }
-
-  .site-nav a {
-    padding: 7px 12px;
-    font-size: 0.85rem;
-  }
-
-  .container {
-    margin: 20px auto;
-  }
-
-  .card {
-    padding: 20px 16px;
-    margin-bottom: 18px;
-  }
-
-  .card h2 {
-    font-size: 1.2rem;
-  }
-
-  #favorite-list {
-    grid-template-columns: 1fr;
-  }
-}
-
-/* カメラ方向のラジオボタン */
-.direction-options {
-  display: flex;
-  justify-content: center;
-  gap: 14px;
-  margin-top: 12px;
-}
-
-.direction-option {
-  cursor: pointer;
-}
-
-.direction-option input {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.direction-option span {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  width: 52px;
-  height: 52px;
-
-  color: #28634f;
-  background: #ffffff;
-  border: 2px solid #b8c9bf;
-  border-radius: 50%;
-
-  font-weight: bold;
-  transition:
-    background-color 0.2s,
-    color 0.2s,
-    border-color 0.2s;
-}
-
-/* 選択中 */
-.direction-option input:checked + span {
-  color: #ffffff;
-  background: #28634f;
-  border-color: #28634f;
-}
-
-/* キーボード操作時 */
-.direction-option input:focus-visible + span {
-  outline: 3px solid #e5a83b;
-  outline-offset: 3px;
-}
-
-/* スマートフォン */
-@media (max-width: 600px) {
-  .direction-options {
-    gap: 12px;
-  }
-
-  .direction-option span {
-    width: 48px;
-    height: 48px;
-  }
-}
-
-/* 撮影方向の視覚化 */
 .direction-visual {
   margin-top: 28px;
   padding: 20px;
@@ -487,15 +410,13 @@ button:disabled {
 }
 
 .direction-visual h3 {
-  margin-top: 0;
-  color: #244c40;
   text-align: center;
 }
 
 .direction-legend {
   display: flex;
-  justify-content: center;
   flex-wrap: wrap;
+  justify-content: center;
   gap: 16px;
   margin: 16px 0;
   font-size: 0.9rem;
@@ -523,13 +444,13 @@ button:disabled {
 }
 
 .compass-circle {
-  fill: #ffffff;
+  fill: #fff;
   stroke: #b8c9bf;
   stroke-width: 2;
 }
 
 .compass-center {
-  fill: #244c40;
+  fill: var(--green-900);
 }
 
 .compass-label {
@@ -540,22 +461,25 @@ button:disabled {
   dominant-baseline: middle;
 }
 
-.sun-arrow {
-  stroke: #e99a35;
+/* 矢印の線（太陽・カメラ 共通） */
+.sun-arrow,
+.camera-arrow {
   stroke-width: 5;
   stroke-linecap: round;
 }
 
-.sun-point {
-  fill: #e99a35;
-  stroke: #ffffff;
-  stroke-width: 2;
+.sun-arrow {
+  stroke: #e99a35;
 }
 
 .camera-arrow {
   stroke: #278568;
-  stroke-width: 5;
-  stroke-linecap: round;
+}
+
+.sun-point {
+  fill: #e99a35;
+  stroke: #fff;
+  stroke-width: 2;
 }
 
 .camera-arrow-head {
@@ -574,8 +498,139 @@ button:disabled {
   text-align: center;
 }
 
-/* スマートフォン */
-@media (max-width: 600px) {
+/* ==========================
+   10. お気に入り一覧
+========================== */
+
+.favorite-area {
+  margin-top: 16px;
+}
+
+#favorite-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+#favorite-list li {
+  min-width: 0;
+}
+
+#favorite-list button {
+  width: 100%;
+  min-height: 48px;
+  padding: 10px 14px;
+  text-align: left;
+  color: var(--green-700);
+  background: #e8f1ed;
+  border: 1px solid #cbded4;
+  border-radius: 8px;
+  transition: background-color 0.2s;
+}
+
+#favorite-list button:hover {
+  color: var(--green-800);
+  background: #d5e7dd;
+}
+
+/* ==========================
+   11. フッター
+========================== */
+
+.site-footer {
+  padding: 24px 16px;
+  color: #5b6a62;
+  font-size: 0.85rem;
+  text-align: center;
+  background: #e9efea;
+}
+
+.site-footer p {
+  margin: 0;
+}
+
+/* ==========================================================
+   12. レスポンシブ
+   上から順に：PC（700px以上）→ スマホ（699px以下）
+========================================================== */
+
+/* ---------- PC：700px以上 ---------- */
+@media (min-width: 700px) {
+  .site-nav {
+    gap: 16px;
+  }
+
+  .site-nav a {
+    padding: 9px 18px;
+  }
+
+  .container {
+    width: min(100% - 40px, 900px);
+    margin: 36px auto;
+  }
+
+  .card {
+    padding: 28px 32px;
+  }
+}
+
+/* ---------- スマホ：699px以下 ---------- */
+@media (max-width: 699px) {
+  .site-header {
+    padding: 26px 12px;
+  }
+
+  .site-header p {
+    font-size: 0.85rem;
+  }
+
+  .site-nav {
+    justify-content: flex-start;
+    gap: 4px;
+    padding: 9px 10px;
+  }
+
+  .site-nav a {
+    padding: 7px 12px;
+    font-size: 0.85rem;
+  }
+
+  .container {
+    margin: 20px auto;
+  }
+
+  .card {
+    margin-bottom: 18px;
+    padding: 20px 16px;
+  }
+
+  .card h2 {
+    font-size: 1.2rem;
+  }
+
+  #favorite-list {
+    grid-template-columns: 1fr;
+  }
+
+  .current-spot {
+    top: 55px;
+    gap: 6px;
+    padding: 9px 8px;
+    font-size: 0.82rem;
+  }
+
+  .direction-options {
+    gap: 12px;
+  }
+
+  .direction-option span {
+    width: 48px;
+    height: 48px;
+  }
+
   .direction-visual {
     padding: 14px;
   }
@@ -587,43 +642,5 @@ button:disabled {
 
   .compass-container {
     max-width: 280px;
-  }
-}
-
-/* 現在選択中のスポット */
-.current-spot {
-  position: sticky;
-  top: 60px; /* ナビゲーションの高さに合わせる */
-  z-index: 99;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px 16px;
-
-  background: #f0f6f2;
-  border-bottom: 1px solid #dce8e1;
-  box-shadow: 0 2px 4px rgb(0 0 0 / 3%);
-
-  font-size: 0.9rem;
-}
-
-.current-spot-label {
-  color: #68776e;
-}
-
-#current-spot-name {
-  color: #244c40;
-  font-weight: bold;
-}
-
-/* スマートフォン */
-@media (max-width: 600px) {
-  .current-spot {
-    top: 55px;
-    gap: 6px;
-    padding: 9px 8px;
-    font-size: 0.82rem;
   }
 }
